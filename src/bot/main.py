@@ -1,9 +1,10 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from sqlalchemy import select, delete, insert, update
+from sqlalchemy.sql import func
 from sqlalchemy.ext.asyncio import AsyncSession
-from models.database import get_async_session
 from models.models import bot
+from models.database import get_async_session
 
 
 router = APIRouter(
@@ -13,15 +14,18 @@ router = APIRouter(
 
 
 @router.post("/")
-def add_bot(alias: str, description: str, token: str, name: str):
+async def add_bot(alias: str, description: str, token: str, name: str, session: AsyncSession = Depends(get_async_session)):
     try:
-        return {
-            "status": 200,
-            "data": {
-                "id": "id",
-                "new": True
-            }
-        }
+        query = insert(bot).values(
+            id=5,
+            alias=alias,
+            description=description,
+            token=token,
+            name=name
+        )
+        await session.execute(query)
+        await session.commit()
+        return {"status": 200}
     except Exception as ex:
         print(ex)
         return {
@@ -31,8 +35,11 @@ def add_bot(alias: str, description: str, token: str, name: str):
 
 
 @router.delete("/{bot_id}")
-async def delete_bot(bot_id: int):
+async def delete_bot(bot_id: int, session: AsyncSession = Depends(get_async_session)):
     try:
+        delete_ = delete(bot).where(bot.c.id == bot_id)
+        await session.execute(delete_)
+        await session.commit()
         return {
             "status": 200,
             "data": {
@@ -62,7 +69,7 @@ async def get_bot_info(bot_id: int, session: AsyncSession = Depends(get_async_se
         query = select(bot).where(bot.c.id == bot_id)
         result = await session.execute(query)
         return result.all()
-    except:
+    except Exception:
         return {
             "status": 503,
             "data": "Database Error. Maybe you lose connection."
@@ -75,7 +82,7 @@ async def get_bots(session: AsyncSession = Depends(get_async_session)):
         query = select(bot)
         result = await session.execute(query)
         return result.all()
-    except:
+    except Exception:
         return {
             "status": 503,
             "data": "Database Error. Maybe it's empty or you lose connection."

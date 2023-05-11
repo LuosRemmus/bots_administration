@@ -6,6 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="20ad41a5-558f-4652-a28d-43e117002570" name="Changes" comment="docker-compose">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/database.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bot/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/config.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,6 +99,7 @@
       <workItem from="1683709824902" duration="39000" />
       <workItem from="1683709890685" duration="20000" />
       <workItem from="1683709912914" duration="3111000" />
+      <workItem from="1683832423054" duration="4948000" />
     </task>
     <servers />
   </component>
