@@ -1,9 +1,18 @@
-from fastapi import FastAPI
+from fastapi import APIRouter
 
-app = FastAPI()
+from sqlalchemy import select, delete, insert, update
+from sqlalchemy.ext.asyncio import AsyncSession
+from models.database import get_async_session
+from models.models import bot
 
 
-@app.post("/bots/")
+router = APIRouter(
+    prefix="/bots",
+    tags=["Bots"]
+)
+
+
+@router.post("/")
 def add_bot(alias: str, description: str, token: str, name: str):
     try:
         return {
@@ -21,8 +30,8 @@ def add_bot(alias: str, description: str, token: str, name: str):
         }
 
 
-@app.delete("/bots/{bot_id}")
-def delete_bot(bot_id: int):
+@router.delete("/{bot_id}")
+async def delete_bot(bot_id: int):
     try:
         return {
             "status": 200,
@@ -39,7 +48,7 @@ def delete_bot(bot_id: int):
         }
 
 
-@app.patch("/bots/{bot_id}")
+@router.patch("/{bot_id}")
 def update_bot(bot_id: int):
     try:
         pass
@@ -47,17 +56,27 @@ def update_bot(bot_id: int):
         print(ex)
 
 
-@app.get("/bots/{bot_id}")
-def get_bot_info(bot_id: int):
+@router.get("/{bot_id}")
+async def get_bot_info(bot_id: int, session: AsyncSession = Depends(get_async_session)):
     try:
-        pass
-    except Exception as ex:
-        print(ex)
-
-
-@app.get("/bots/")
-def get_bots():
-    try:
-        pass
+        query = select(bot).where(bot.c.id == bot_id)
+        result = await session.execute(query)
+        return result.all()
     except:
-        print()
+        return {
+            "status": 503,
+            "data": "Database Error. Maybe you lose connection."
+        }
+
+
+@router.get("/")
+async def get_bots(session: AsyncSession = Depends(get_async_session)):
+    try:
+        query = select(bot)
+        result = await session.execute(query)
+        return result.all()
+    except:
+        return {
+            "status": 503,
+            "data": "Database Error. Maybe it's empty or you lose connection."
+        }

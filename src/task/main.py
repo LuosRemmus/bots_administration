@@ -1,9 +1,12 @@
-from fastapi import FastAPI
+from fastapi import APIRouter
 
-app = FastAPI()
+router = APIRouter(
+    prefix="/tasks",
+    tags=["Tasks"]
+)
 
 
-@app.get("/tasks/{task_id}")
+@router.get("/{task_id}")
 def get_task(task_id: int):
     try:
         pass

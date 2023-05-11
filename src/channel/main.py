@@ -1,9 +1,12 @@
-from fastapi import FastAPI
+from fastapi import APIRouter
 
-app = FastAPI()
+router = APIRouter(
+    prefix="/channels",
+    tags=["Channels"]
+)
 
 
-@app.post("/channels/")
+@router.post("/")
 def bind(channel: str):
     try:
         pass
@@ -11,7 +14,7 @@ def bind(channel: str):
         pass
 
 
-@app.delete("/channels/{channel_id}")
+@router.delete("/{channel_id}")
 def delete_channel(channel_id: int):
     try:
         pass
@@ -19,7 +22,7 @@ def delete_channel(channel_id: int):
         pass
 
 
-@app.post("/channels/")
+@router.post("/")
 def direct_bind(bot_id: int):
     try:
         pass
@@ -27,7 +30,7 @@ def direct_bind(bot_id: int):
         pass
 
 
-@app.get("/channels/{channel_id}")
+@router.get("/{channel_id}")
 def channel_info(channel_id: int):
     try:
         pass
@@ -35,7 +38,7 @@ def channel_info(channel_id: int):
         pass
 
 
-@app.get("/channels/")
+@router.get("/")
 def get_channels():
     try:
         pass
