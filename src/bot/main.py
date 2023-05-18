@@ -33,7 +33,7 @@ async def add_bot(bot_model: PostBotModel, session: AsyncSession = Depends(get_a
     except Exception as ex:
         logger.error(ex)
         return {
-            "status": status.HTTP_409_CONFLICT, # Лучше всё заменить на статусы, а не хардкодить
+            "status": status.HTTP_409_CONFLICT,
             "message": "Бот уже есть в базе"
         }
 
@@ -41,9 +41,10 @@ async def add_bot(bot_model: PostBotModel, session: AsyncSession = Depends(get_a
 @router.delete("/{bot_id}", status_code=status.HTTP_200_OK)
 async def delete_bot(bot_id: int, session: AsyncSession = Depends(get_async_session)):
     try:
-        await session.delete(bot_id)
+        bot = await session.get(Bot, bot_id)
+        await session.delete(bot)
         await session.commit()
-        return { # Вот эту модель лучше поменять
+        return {
             "status": status.HTTP_200_OK,
             "data": {
                 "id": bot_id,
@@ -61,27 +62,38 @@ async def delete_bot(bot_id: int, session: AsyncSession = Depends(get_async_sess
 @router.patch("/{bot_id}", status_code=status.HTTP_200_OK)
 async def update_bot(bot_id: int, bot_model: PutBotModel, session: AsyncSession = Depends(get_async_session)):
     try:
-        bot = await session.get(bot_id)
-        for field, value in bot_model.__fields__.items():
+        bot = await session.get(Bot, bot_id)
+        for field, value in bot_model.__dict__.items():
             if value is not None:
                 setattr(bot, field, value)
         await session.commit()
+        return {
+            "status": status.HTTP_200_OK,
+            "data": {
+                "id": bot.id,
+                "alias": bot.alias,
+                "description": bot.description,
+                "token": bot.token,
+                "name": bot.name,
+                "message": "updated"
+            }
+        }
     except Exception as ex:
         logger.error(ex)
         return {
             "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
-            "data": "Database Error. Maybe you lose connection."
+            "message": "Ошибка подключения к базе данных."
         } 
 
 
 @router.get("/{bot_id}", response_model=GetBotModel, status_code=status.HTTP_200_OK)
 async def get_bot_info(bot_id: int, session: AsyncSession = Depends(get_async_session)):
     try:
-        return await session.get(bot_id)
+        return await session.scalar(select(Bot).where(Bot.id==bot_id))
     except Exception:
         return {
             "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
-            "data": "Database Error. Maybe you lose connection."
+            "message": "Ошибка подключения к базе данных."
         }
 
 
@@ -92,5 +104,5 @@ async def get_bots(session: AsyncSession = Depends(get_async_session)):
     except Exception:
         return {
             "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
-            "data": "Database Error. Maybe it's empty or you lose connection."
+            "message": "Ошибка подключения к базе данных."
         }

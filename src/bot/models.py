@@ -13,7 +13,7 @@ class PostBotModel(BaseModel):
 class PostRespBotModel(BaseBotModel):
     pass
 
-class GetBotModel(BaseModel):
+class GetBotModel(BaseBotModel):
     name: str
     alias: str
     description: Optional[str]
