@@ -41,7 +41,7 @@ async def add_bot(bot_model: PostBotModel, session: AsyncSession = Depends(get_a
 @router.delete("/{bot_id}", status_code=status.HTTP_200_OK)
 async def delete_bot(bot_id: int, session: AsyncSession = Depends(get_async_session)):
     try:
-        await session.delete(bot_id)
+        await session.delete(Bot, bot_id)
         await session.commit()
         return { # Вот эту модель лучше поменять
             "status": status.HTTP_200_OK,
