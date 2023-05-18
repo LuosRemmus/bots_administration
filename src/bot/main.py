@@ -7,6 +7,7 @@ from bot.models import GetBotModel, PostBotModel, PostRespBotModel, PutBotModel
 from models.models import Bot
 from models.database import get_async_session
 import starlette.status as status
+from typing import List
 
 router = APIRouter(
     prefix="/bots",
@@ -49,15 +50,7 @@ async def delete_bot(bot_id: int, session: AsyncSession = Depends(get_async_sess
                 "message": "deleted"
             }
         }
-        """
-        скорее всего подойдёт что то наподобие:
-        return bot_id
-        """
     except Exception as ex:
-        """
-        эту ошибку лучше отлавливать последней
-        перед ней лучше отловить IntegrityError от алхимии с разными статусами
-        """
         logging.error(ex)
         return {
             "status": status.HTTP_409_CONFLICT,
@@ -65,7 +58,7 @@ async def delete_bot(bot_id: int, session: AsyncSession = Depends(get_async_sess
         }
 
 
-@router.patch("/{bot_id}", status_code=status.HTTP_200)
+@router.patch("/{bot_id}", status_code=status.HTTP_200_OK)
 async def update_bot(bot_id: int, bot_model: PutBotModel, session: AsyncSession = Depends(get_async_session)):
     try:
         bot = await session.get(bot_id)
@@ -92,7 +85,7 @@ async def get_bot_info(bot_id: int, session: AsyncSession = Depends(get_async_se
         }
 
 
-@router.get("/", response_model=list[GetBotModel], status_code=status.HTTP_200_OK)
+@router.get("/", response_model=List[GetBotModel], status_code=status.HTTP_200_OK)
 async def get_bots(session: AsyncSession = Depends(get_async_session)):
     try:
         return (await session.scalars(select(Bot))).fetchall()

@@ -5,7 +5,7 @@ from bot.main import router as bot_router
 from channel.main import router as channel_router
 from message.main import router as message_router
 from task.main import router as task_router
-from src.config import config
+from config import config
 
 logging.basicConfig(level=config.log_level)
 

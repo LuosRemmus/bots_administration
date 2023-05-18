@@ -1,0 +1,6 @@
+sqlalchemy
+fastapi[all]
+pydantic[dotenv]
+psycopg2-binary
+asyncpg
+telethon

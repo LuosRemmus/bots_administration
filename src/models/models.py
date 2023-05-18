@@ -1,10 +1,10 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from src.models.database import engine
+from models.database import engine
 from typing import Optional
 
-Base = declarative_base(bind=engine)
+Base = declarative_base()
 
 
 class Bot(Base):
@@ -21,6 +21,7 @@ class Bot(Base):
 
 
 class Channel(Base):
+    __tablename__ = "channel"
     id: Mapped[int] = mapped_column(
         primary_key=True, nullable=False, autoincrement=True
     )
