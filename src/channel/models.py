@@ -12,7 +12,7 @@ class PostChannelModel(BaseModel):
 class PostRespChannelModel(BaseChannelModel):
     pass
 
-class GetChannelModel(BaseModel):
+class GetChannelModel(BaseChannelModel):
     channel_link: Optional[str]
     bot_link: Optional[str]
     bot_id: Optional[str]

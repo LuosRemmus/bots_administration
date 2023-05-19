@@ -4,7 +4,7 @@ import logging
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from channel.models import GetChannelModel, PostChannelModel, PostRespChannelModel
-from models.models import Channel
+from models.models import Channel, Bot
 from models.database import get_async_session
 import starlette.status as status
 from typing import List
@@ -37,7 +37,8 @@ async def bind(bot_id_: int, channel_model: PostChannelModel, session: AsyncSess
 @router.delete("/{channel_id}", status_code=status.HTTP_200_OK)
 async def delete_channel(channel_id: int, session: AsyncSession = Depends(get_async_session)):
     try:
-        await session.delete(channel_id)
+        channel = await session.get(Channel, channel_id)
+        await session.delete(channel)
         await session.commit()
         return {
             "status": status.HTTP_200_OK,
