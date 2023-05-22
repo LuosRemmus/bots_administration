@@ -5,9 +5,9 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres #optional (specify default database instead of $POSTGRES_DB)
+      - POSTGRES_DB=postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     restart: always
 
   pgadmin:

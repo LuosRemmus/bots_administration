@@ -6,7 +6,7 @@ class DBConfig(BaseModel):
     user: str = "postgres"
     password: str = "postgres"
     host: str = "localhost"
-    port: int = 5432
+    port: int = 5433
     database: str = "postgres"
 
     @property
