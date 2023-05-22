@@ -1,11 +1,10 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from models.database import engine
 from typing import Optional
+from sqlalchemy import MetaData
 
 Base = declarative_base()
-
 
 class Bot(Base):
     __tablename__ = "bot"

@@ -13,19 +13,28 @@ router = APIRouter(prefix="/channels", tags=["Channels"])
 
 logger = logging.getLogger("channel")
 
-@router.post("/", response_model=PostRespChannelModel, status_code=status.HTTP_200_OK)
-async def bind(bot_id_: int, channel_model: PostChannelModel, session: AsyncSession = Depends(get_async_session)):
+@router.post("/", status_code=status.HTTP_200_OK)
+async def bind(channel_model: PostChannelModel, session: AsyncSession = Depends(get_async_session)):
     try:
         channel = Channel(
             channel_link = channel_model.channel_link,
             bot_link = channel_model.bot_link,
-            bot_id = bot_id_
+            bot_id = channel_model.bot_id
         )
         session.add(channel)
 
         await session.commit()
         await session.refresh(channel)
-        return PostRespChannelModel(id=channel.id)
+        return {
+            "status": status.HTTP_200_OK,
+            "data": {
+                "id": channel.id,
+                "channel_link": channel_model.channel_link,
+                "bot_link": channel_model.bot_link,
+                "bot_id": channel_model.bot_id
+            }
+        }
+        # return PostRespChannelModel(id=channel.id)
     except Exception as ex:
         logger.error(ex)
         return {
@@ -59,7 +68,7 @@ async def delete_channel(channel_id: int, session: AsyncSession = Depends(get_as
 @router.get("/{channel_id}", response_model=GetChannelModel, status_code=status.HTTP_200_OK)
 async def channel_info(channel_id: int, session: AsyncSession = Depends(get_async_session)):
     try:
-        return await session.get(channel_id)
+        return await session.scalar(select(Channel).where(Channel.id==channel_id))
     except Exception as ex:
         logging.error(ex)
         return {

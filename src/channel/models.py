@@ -7,7 +7,7 @@ class BaseChannelModel(BaseModel):
 class PostChannelModel(BaseModel):
     channel_link: Optional[str]
     bot_link: Optional[str]
-    bot_id: Optional[str]
+    bot_id: Optional[int]
 
 class PostRespChannelModel(BaseChannelModel):
     pass
@@ -15,7 +15,7 @@ class PostRespChannelModel(BaseChannelModel):
 class GetChannelModel(BaseChannelModel):
     channel_link: Optional[str]
     bot_link: Optional[str]
-    bot_id: Optional[str]
+    bot_id: Optional[int]
 
     class Config:
         orm_mode = True

@@ -7,6 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from models.models import Bot, Channel
 from models.database import get_async_session
+import regex
 
 router = APIRouter(prefix="/messages", tags=["Messages"])
 
@@ -14,6 +15,7 @@ async def bot_init(channel_id: int, chat_link: str, msg: str, session: AsyncSess
     bot_id = await session.scalar(select(Channel.bot_id).where(Channel.id==channel_id))
     token = await session.scalar(select(Bot.token).where(Bot.id==bot_id))
     bot = TeleBot(token)
+    msg = msg.replace("***newstr***", "\n")
     bot.send_message(chat_link, msg, parse_mode='html')
 
     return bot
