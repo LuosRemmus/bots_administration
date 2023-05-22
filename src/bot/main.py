@@ -17,7 +17,7 @@ router = APIRouter(
 logger = logging.getLogger("bot")
 
 
-@router.post("/", response_model=PostRespBotModel, status_code=status.HTTP_200_OK)
+@router.post("/", status_code=status.HTTP_200_OK)
 async def add_bot(bot_model: PostBotModel, session: AsyncSession = Depends(get_async_session)):
     try:
         bot = Bot(
@@ -29,7 +29,17 @@ async def add_bot(bot_model: PostBotModel, session: AsyncSession = Depends(get_a
         session.add(bot)
         await session.commit()
         await session.refresh(bot)
-        return PostRespBotModel(id=bot.id)
+        return {
+            "status": status.HTTP_200_OK,
+            "data": {
+                "id": bot.id,
+                "alias": bot.alias,
+                "token": bot.token,
+                "description": bot.description,
+                "name": bot.name,
+                "message": "created"
+            }
+        }
     except Exception as ex:
         logger.error(ex)
         return {
